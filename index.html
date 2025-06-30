@@ -12,7 +12,7 @@
       flex-direction: column;
       gap: 1rem;
       height: 100vh;
-      background: #ffffff;
+      background: #ffffff; /* Đã thay đổi thành màu trắng mặc định */
       background-size: cover;
       font-family: sans-serif;
       margin: 0;
@@ -145,6 +145,8 @@
   </style>
 </head>
 <body>
+<audio id="spin-sound" src="wheel_spin.mp3" preload="auto"></audio>
+
 <div class="container">
   <div id="setup" class="panel setup-panel">
     <textarea id="prize-input" placeholder="Nhập giải theo định dạng: tên giải|số lượng|trọng số&#10;Ví dụ:&#10;Giải A|3|5&#10;Giải B|2|1">Giải 1|5
@@ -182,6 +184,7 @@ let prizes = [];
 let lastRotation = 0;
 let spinning = false;
 let historyData = [];
+let spinSound; // Khai báo biến để lưu đối tượng âm thanh
 
 // Lưu lịch sử vào LocalStorage ở dạng CSV
 function saveHistoryToLocalStorage() {
@@ -308,7 +311,20 @@ function spinWheel() {
   wheel.style.transition = `transform ${durationSec}s ease-out`;
   wheel.style.transform = `rotate(${lastRotation}deg)`;
 
+  // PHÁT ÂM THANH KHI BẮT ĐẦU QUAY
+  if (spinSound) {
+    spinSound.currentTime = 0; // Đặt lại về đầu nếu đã phát trước đó
+    spinSound.play().catch(e => console.error("Lỗi khi phát âm thanh:", e));
+  }
+
+
   setTimeout(() => {
+    // DỪNG ÂM THANH KHI DỪNG QUAY
+    if (spinSound) {
+      spinSound.pause();
+      spinSound.currentTime = 0; // Tùy chọn: Đặt lại về đầu để chuẩn bị cho lần quay tiếp theo
+    }
+
     const prize = prizes[targetIndex];
     const timestamp = new Date().toLocaleTimeString();
     resultBox.textContent = `Chúc mừng bạn đã trúng: ${prize.label}`;
@@ -387,18 +403,25 @@ window.addEventListener("DOMContentLoaded", () => {
       const ratio = totalRemain > 0 ? ((remain / totalRemain) * 100).toFixed(1) : 0;
       report += `${p.label} - Đã dùng: ${used} - Còn lại: ${remain} - Tỉ lệ trúng: ${ratio}%\n`;
     });
-    alert(report);
+    // Thay đổi alert bằng console.log hoặc một modal tùy chỉnh nếu chạy trong iframe
+    console.log(report);
   });
   // Sự kiện nút Xóa lịch sử
   document.getElementById('clear-history')?.addEventListener('click', () => {
-    if (confirm('Bạn có chắc chắn muốn xóa toàn bộ Lịch sử?')) {
+    // Thay đổi confirm bằng modal tùy chỉnh
+    if (window.confirm('Bạn có chắc chắn muốn xóa toàn bộ Lịch sử?')) { // Sử dụng window.confirm để tương thích với môi trường bên ngoài iframe
       localStorage.removeItem('lich_su_trung_thuong_csv');
       historyData = [];
       document.getElementById("history-list").innerHTML = "";
       document.getElementById("result").textContent = "";
-      alert('Đã xóa toàn bộ lịch sử quay!');
+      // Thay đổi alert bằng console.log hoặc một modal tùy chỉnh
+      console.log('Đã xóa toàn bộ lịch sử quay!');
     }
   });
+
+  // KHỞI TẠO ĐỐI TƯỢNG ÂM THANH KHI DOM ĐƯỢC TẢI
+  spinSound = document.getElementById("spin-sound");
+
 
   updateWheel();
   restoreHistoryFromLocalStorage(); // Phục hồi lịch sử khi tải lại trang!
