@@ -1,463 +1,527 @@
 <!DOCTYPE html>
 <html lang="vi">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quay số trúng thưởng</title>
-  <style>
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      gap: 1rem;
-      height: 100vh;
-      background: #ffffff; /* Đã thay đổi thành màu trắng mặc định */
-      background-size: cover;
-      font-family: sans-serif;
-      margin: 0;
-    }
-    .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      position: relative;
-      background: transparent;
-      padding: 1rem;
-      border-radius: 1rem;
-    }
-    .panel {
-      border-radius: 1rem;
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.75rem;
-    }
-    .setup-panel {
-      background: rgba(255, 255, 255, 0.9);
-    }
-    .play-panel {
-      display: none;
-      position: relative;
-    }
-    textarea {
-      width: 300px;
-      height: 120px;
-    }
-    .button {
-      background: #2563eb;
-      color: #fff;
-      font-weight: bold;
-      padding: 1rem 2rem;
-      border-radius: 9999px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-      border: none;
-      cursor: pointer;
-    }
-    .wheel-container {
-      position: relative;
-      margin-top: 1rem;
-    }
-    .arrow-top {
-      position: absolute;
-      top: -30px;
-      left: 50%;
-      transform: translateX(-50%) rotate(180deg);
-      width: 0;
-      height: 0;
-      border-left: 20px solid transparent;
-      border-right: 20px solid transparent;
-      border-bottom: 30px solid red;
-      z-index: 10;
-    }
-    .wheel {
-      width: 28rem;
-      height: 28rem;
-      border: 4px solid #ccc;
-      border-radius: 50%;
-      overflow: hidden;
-      position: relative;
-    }
-    .start-button {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 5;
-      font-size: 1.5rem;
-    }
-    .result {
-      display: inline-block;
-      margin-top: 1rem;
-      font-size: 1.1rem;
-      font-weight: bold;
-      color: #ef4444;
-      text-align: center;
-      background: #fff;
-      padding: 0.5rem 1rem;
-      border-radius: 0.5rem;
-      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-      min-width: unset;
-      min-height: unset;
-      max-width: 90vw;
-      white-space: pre-line;
-    }
-    #history {
-      margin-top: 1rem;
-      width: 300px;
-      text-align: left;
-      font-size: 0.9rem;
-      color: #374151;
-    }
-    .confetti {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 10;
-    }
-    /* Row nút điều khiển cuối */
-    .control-buttons-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1.2rem;
-      width: 100%;
-      max-width: 420px;
-      margin-top: 2rem;
-      margin-bottom: 0.5rem;
-      position: relative;
-    }
-    .control-buttons-row .button {
-      flex: 1 1 0px;
-      min-width: 0;
-      white-space: nowrap;
-      padding: 0.6rem 1.2rem;
-      font-size: 1rem;
-    }
-    #clear-history {
-      background: #ef4444;
-      color: #fff;
-    }
-  </style>
-</head>
-<body>
-<audio id="spin-sound" src="wheel_spin.mp3" preload="auto"></audio>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quay số trúng thưởng</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 1rem;
+        height: 100vh;
+        background: #ffffff; /* Đã thay đổi thành màu trắng mặc định */
+        background-size: cover;
+        font-family: sans-serif;
+        margin: 0;
+      }
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        background: transparent;
+        padding: 1rem;
+        border-radius: 1rem;
+      }
+      .panel {
+        border-radius: 1rem;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .setup-panel {
+        background: rgba(255, 255, 255, 0.9);
+      }
+      .play-panel {
+        display: none;
+        position: relative;
+      }
+      textarea {
+        width: 300px;
+        height: 120px;
+      }
+      .button {
+        background: #2563eb;
+        color: #fff;
+        font-weight: bold;
+        padding: 1rem 2rem;
+        border-radius: 9999px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        border: none;
+        cursor: pointer;
+      }
+      .wheel-container {
+        position: relative;
+        margin-top: 1rem;
+      }
+      .arrow-top {
+        position: absolute;
+        top: -30px;
+        left: 50%;
+        transform: translateX(-50%) rotate(180deg);
+        width: 0;
+        height: 0;
+        border-left: 20px solid transparent;
+        border-right: 20px solid transparent;
+        border-bottom: 30px solid red;
+        z-index: 10;
+      }
+      .wheel {
+        width: 28rem;
+        height: 28rem;
+        border: 4px solid #ccc;
+        border-radius: 50%;
+        overflow: hidden;
+        position: relative;
+      }
+      .start-button {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 5;
+        font-size: 1.5rem;
+      }
+      .result {
+        display: inline-block;
+        margin-top: 1rem;
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: #ef4444;
+        text-align: center;
+        background: #fff;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        min-width: unset;
+        min-height: unset;
+        max-width: 90vw;
+        white-space: pre-line;
+      }
+      #history {
+        margin-top: 1rem;
+        width: 300px;
+        text-align: left;
+        font-size: 0.9rem;
+        color: #374151;
+      }
+      .confetti {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 10;
+      }
+      /* Row nút điều khiển cuối */
+      .control-buttons-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1.2rem;
+        width: 100%;
+        max-width: 420px;
+        margin-top: 2rem;
+        margin-bottom: 0.5rem;
+        position: relative;
+      }
+      .control-buttons-row .button {
+        flex: 1 1 0px;
+        min-width: 0;
+        white-space: nowrap;
+        padding: 0.6rem 1.2rem;
+        font-size: 1rem;
+      }
+      #clear-history {
+        background: #ef4444;
+        color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <audio id="spin-sound" src="wheel_spin.mp3" preload="auto"></audio>
 
-<div class="container">
-  <div id="setup" class="panel setup-panel">
-    <textarea id="prize-input" placeholder="Nhập giải theo định dạng: tên giải|số lượng|trọng số&#10;Ví dụ:&#10;Giải A|3|5&#10;Giải B|2|1">Giải 1|5
-Giải 2|10
-Giải 3|10
-Giải 4|15</textarea>
-    <button class="button" id="update-button">Cập nhật giải</button>
-    <input type="file" id="bg-file" accept="image/*">
-    <button class="button" id="bg-button">Chọn ảnh nền</button>
-    <button class="button" id="ready-button">Ready</button>
-  </div>
-
-  <div id="play" class="panel play-panel">
-    <canvas class="confetti" id="confetti"></canvas>
-    <div class="wheel-container">
-      <div class="arrow-top"></div>
-      <div class="wheel" id="wheel">
-        <svg id="wheel-svg" viewBox="0 0 200 200" width="100%" height="100%"></svg>
+    <div class="container">
+      <div id="setup" class="panel setup-panel">
+        <textarea
+          id="prize-input"
+          placeholder="Nhập giải theo định dạng: tên giải|số lượng|trọng số|mã màu&#10;Ví dụ:&#10;Giải A|3|5|#FF0000&#10;Giải B|2|1|blue&#10;Giải C|1|1|rgb(0,255,0)&#10;Giải D|5||hsl(60,100%,50%) (trọng số mặc định là 1)&#10;Giải E|10|3|#00FFFF&#10;Để trống trọng số, sử dụng 2 dấu gạch đứng liên tiếp (||)"
+        ></textarea>
+        <button class="button" id="update-button">Cập nhật giải</button>
+        <input type="file" id="bg-file" accept="image/*" />
+        <button class="button" id="bg-button">Chọn ảnh nền</button>
+        <button class="button" id="ready-button">Ready</button>
       </div>
-      <button class="button start-button" id="start-button">Quay</button>
+
+      <div id="play" class="panel play-panel">
+        <canvas class="confetti" id="confetti"></canvas>
+        <div class="wheel-container">
+          <div class="arrow-top"></div>
+          <div class="wheel" id="wheel">
+            <svg
+              id="wheel-svg"
+              viewBox="0 0 200 200"
+              width="100%"
+              height="100%"
+            ></svg>
+          </div>
+          <button class="button start-button" id="start-button">Quay</button>
+        </div>
+        <div class="result" id="result"></div>
+        <div id="history">
+          <strong>Lịch sử trúng thưởng:</strong>
+          <ul id="history-list"></ul>
+        </div>
+        <div class="control-buttons-row">
+          <button id="download-history" class="button">History</button>
+          <button id="clear-history" class="button">Xóa lịch sử</button>
+          <button id="setup-button" class="button">Setup</button>
+        </div>
+      </div>
     </div>
-    <div class="result" id="result"></div>
-    <div id="history"><strong>Lịch sử trúng thưởng:</strong><ul id="history-list"></ul></div>
-    <div class="control-buttons-row">
-      <button id="download-history" class="button">History</button>
-      <button id="clear-history" class="button">Xóa lịch sử</button>
-      <button id="setup-button" class="button">Setup</button>
-    </div>
-  </div>
-</div>
 
-<script src="confetti.browser.min.js"></script>
-<script>
-let prizes = [];
-let lastRotation = 0;
-let spinning = false;
-let historyData = [];
-let spinSound; // Khai báo biến để lưu đối tượng âm thanh
+    <script src="confetti.browser.min.js"></script>
+    <script>
+      let prizes = [];
+      let lastRotation = 0;
+      let spinning = false;
+      let historyData = [];
+      let spinSound; // Khai báo biến để lưu đối tượng âm thanh
 
-// Lưu lịch sử vào LocalStorage ở dạng CSV
-function saveHistoryToLocalStorage() {
-  if (historyData.length === 0) return;
-  const header = "Thoi gian, Giai thuong\n";
-  const rows = historyData.map(item => `${item.time},${item.prize}`).join("\n");
-  const csvContent = header + rows;
-  localStorage.setItem("lich_su_trung_thuong_csv", csvContent);
-}
+      // Lưu lịch sử vào LocalStorage ở dạng CSV
+      function saveHistoryToLocalStorage() {
+        if (historyData.length === 0) return;
+        const header = "Thoi gian, Giai thuong\n";
+        const rows = historyData
+          .map((item) => `${item.time},${item.prize}`)
+          .join("\n");
+        const csvContent = header + rows;
+        localStorage.setItem("lich_su_trung_thuong_csv", csvContent);
+      }
 
-// Xuất file CSV từ LocalStorage (dùng cho nút History)
-function downloadHistoryAsCSV() {
-  let csvContent = localStorage.getItem("lich_su_trung_thuong_csv");
-  if (!csvContent) return;
-  const blob = new Blob([csvContent], { type: 'text/csv' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'lich_su_trung_thuong.csv';
-  a.click();
-  URL.revokeObjectURL(url);
-}
+      // Xuất file CSV từ LocalStorage (dùng cho nút History)
+      function downloadHistoryAsCSV() {
+        let csvContent = localStorage.getItem("lich_su_trung_thuong_csv");
+        if (!csvContent) return;
+        const blob = new Blob([csvContent], { type: "text/csv" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "lich_su_trung_thuong.csv";
+        a.click();
+        URL.revokeObjectURL(url);
+      }
 
-// Phục hồi lịch sử quay từ LocalStorage (nếu có) khi tải lại trang
-function restoreHistoryFromLocalStorage() {
-  let csvContent = localStorage.getItem("lich_su_trung_thuong_csv");
-  if (!csvContent) return;
-  let lines = csvContent.trim().split("\n");
-  // Bỏ dòng header
-  lines = lines.slice(1);
-  historyData = [];
-  lines.forEach(line => {
-    const [time, prize] = line.split(",");
-    if (time && prize) historyData.push({ time: time.trim(), prize: prize.trim() });
-  });
-  // Hiển thị kết quả gần nhất (nếu có)
-  if (historyData.length > 0) {
-    const last = historyData[historyData.length - 1];
-    const ul = document.getElementById("history-list");
-    ul.innerHTML = "";
-    const li = document.createElement("li");
-    li.textContent = `${last.time} - ${last.prize}`;
-    ul.appendChild(li);
-    // Hiển thị thông báo "Chúc mừng..."
-    document.getElementById("result").textContent = `Chúc mừng bạn đã trúng: ${last.prize}`;
-  }
-}
+      // Phục hồi lịch sử quay từ LocalStorage (nếu có) khi tải lại trang
+      function restoreHistoryFromLocalStorage() {
+        let csvContent = localStorage.getItem("lich_su_trung_thuong_csv");
+        if (!csvContent) return;
+        let lines = csvContent.trim().split("\n");
+        // Bỏ dòng header
+        lines = lines.slice(1);
+        historyData = [];
+        lines.forEach((line) => {
+          const [time, prize] = line.split(",");
+          if (time && prize)
+            historyData.push({ time: time.trim(), prize: prize.trim() });
+        });
+        // Hiển thị kết quả gần nhất (nếu có)
+        if (historyData.length > 0) {
+          const last = historyData[historyData.length - 1];
+          const ul = document.getElementById("history-list");
+          ul.innerHTML = "";
+          const li = document.createElement("li");
+          li.textContent = `${last.time} - ${last.prize}`;
+          ul.appendChild(li);
+          // Hiển thị thông báo "Chúc mừng..."
+          document.getElementById(
+            "result"
+          ).textContent = `Chúc mừng bạn đã trúng: ${last.prize}`;
+        }
+      }
 
-function updateWheel() {
-  const input = document.getElementById("prize-input").value;
-  prizes = input.split("\n").map(l => {
-    const [p, c, w] = l.split("|").map(x => x.trim());
-    return { label: p, count: parseInt(c), weight: parseFloat(w) || 1 };
-  }).filter(p => p.label && !isNaN(p.count) && p.count > 0);
-  drawWheel();
-}
+      function updateWheel() {
+        const input = document.getElementById("prize-input").value;
+        prizes = input
+          .split("\n")
+          .map((l) => {
+            const parts = l.split("|").map((x) => x.trim());
+            const label = parts[0];
+            const count = parseInt(parts[1]);
+            // Trọng số: nếu parts[2] không rỗng và là số, thì dùng nó, ngược lại mặc định là 1.
+            // Đảm bảo không nhầm màu với trọng số nếu người dùng bỏ qua trọng số nhưng nhập màu.
+            const weight =
+              parts[2] && !isNaN(parseFloat(parts[2]))
+                ? parseFloat(parts[2])
+                : 1;
+            // Màu tùy chỉnh: nếu parts[3] tồn tại và không rỗng, thì dùng nó.
+            const customColor =
+              parts[3] && parts[3] !== "" ? parts[3] : undefined;
 
-function drawWheel() {
-  const svg = document.getElementById("wheel-svg");
-  if (!svg) return;
-  svg.innerHTML = "";
-  if (prizes.length === 0) return;
-  const slice = 360 / prizes.length;
-  prizes.forEach((p, i) => {
-    const s = i * slice,
-          e = s + slice,
-          color = `hsl(${(i * 360) / prizes.length},70%,50%)`;
-    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    const laf = slice > 180 ? 1 : 0;
-    const x1 = 100 + 100 * Math.cos(((s - 90) * Math.PI) / 180);
-    const y1 = 100 + 100 * Math.sin(((s - 90) * Math.PI) / 180);
-    const x2 = 100 + 100 * Math.cos(((e - 90) * Math.PI) / 180);
-    const y2 = 100 + 100 * Math.sin(((e - 90) * Math.PI) / 180);
-    path.setAttribute("d", `M100,100 L${x1},${y1} A100,100 0 ${laf} 1 ${x2},${y2} Z`);
-    path.setAttribute("fill", color);
-    svg.appendChild(path);
+            return {
+              label: label,
+              count: count,
+              weight: weight,
+              customColor: customColor,
+            };
+          })
+          .filter((p) => p.label && !isNaN(p.count) && p.count > 0);
+        drawWheel();
+      }
 
-    const ta = s + slice / 2;
-    const tx = 100 + 60 * Math.cos(((ta - 90) * Math.PI) / 180);
-    const ty = 100 + 60 * Math.sin(((ta - 90) * Math.PI) / 180);
-    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    text.setAttribute("x", tx);
-    text.setAttribute("y", ty);
-    text.setAttribute("fill", "white");
-    text.setAttribute("font-size", "12");
-    text.setAttribute("font-weight", "bold");
-    text.setAttribute("text-anchor", "middle");
-    text.setAttribute("alignment-baseline", "middle");
-    text.textContent = p.label;
-    svg.appendChild(text);
-  });
-}
+      function drawWheel() {
+        const svg = document.getElementById("wheel-svg");
+        if (!svg) return;
+        svg.innerHTML = "";
+        if (prizes.length === 0) return;
+        const slice = 360 / prizes.length;
+        prizes.forEach((p, i) => {
+          const s = i * slice,
+            e = s + slice;
+          // Sử dụng màu tùy chỉnh nếu có, ngược lại tạo màu HSL
+          const color =
+            p.customColor || `hsl(${(i * 360) / prizes.length},70%,50%)`;
+          const path = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "path"
+          );
+          const laf = slice > 180 ? 1 : 0;
+          const x1 = 100 + 100 * Math.cos(((s - 90) * Math.PI) / 180);
+          const y1 = 100 + 100 * Math.sin(((s - 90) * Math.PI) / 180);
+          const x2 = 100 + 100 * Math.cos(((e - 90) * Math.PI) / 180);
+          const y2 = 100 + 100 * Math.sin(((e - 90) * Math.PI) / 180);
+          path.setAttribute(
+            "d",
+            `M100,100 L${x1},${y1} A100,100 0 ${laf} 1 ${x2},${y2} Z`
+          );
+          path.setAttribute("fill", color);
+          svg.appendChild(path);
 
-function pickPrizeIndexByCount() {
-  const total = prizes.reduce((acc, p) => acc + p.count, 0);
-  let r = Math.floor(Math.random() * total) + 1;
-  for (let i = 0; i < prizes.length; i++) {
-    r -= prizes[i].count;
-    if (r <= 0) return i;
-  }
-  return prizes.length - 1;
-}
+          const ta = s + slice / 2;
+          const tx = 100 + 60 * Math.cos(((ta - 90) * Math.PI) / 180);
+          const ty = 100 + 60 * Math.sin(((ta - 90) * Math.PI) / 180);
+          const text = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "text"
+          );
+          text.setAttribute("x", tx);
+          text.setAttribute("y", ty);
+          text.setAttribute("fill", "white");
+          text.setAttribute("font-size", "12");
+          text.setAttribute("font-weight", "bold");
+          text.setAttribute("text-anchor", "middle");
+          text.setAttribute("alignment-baseline", "middle");
+          text.textContent = p.label;
+          svg.appendChild(text);
+        });
+      }
 
-function spinWheel() {
-  if (prizes.length === 0 || spinning) return;
-  spinning = true;
-  const wheel = document.getElementById("wheel");
-  const resultBox = document.getElementById("result");
-  resultBox.textContent = "";
-  const slice = 360 / prizes.length;
-  const spinRounds = Math.floor(Math.random() * 3) + 5;
+      function pickPrizeIndexByCount() {
+        const total = prizes.reduce((acc, p) => acc + p.count, 0);
+        let r = Math.floor(Math.random() * total) + 1;
+        for (let i = 0; i < prizes.length; i++) {
+          r -= prizes[i].count;
+          if (r <= 0) return i;
+        }
+        return prizes.length - 1;
+      }
 
-  const targetIndex = pickPrizeIndexByCount();
+      function spinWheel() {
+        if (prizes.length === 0 || spinning) return;
+        spinning = true;
+        const wheel = document.getElementById("wheel");
+        const resultBox = document.getElementById("result");
+        resultBox.textContent = "";
+        const slice = 360 / prizes.length;
+        const spinRounds = Math.floor(Math.random() * 3) + 5;
 
-  const currentRotation = lastRotation % 360;
-  const targetAngle = targetIndex * slice + slice / 2;
-  let rotationToTop = 360 - targetAngle - currentRotation;
-  rotationToTop = (rotationToTop + 360) % 360;
-  const rotationAmount = spinRounds * 360 + rotationToTop;
-  lastRotation += rotationAmount;
+        const targetIndex = pickPrizeIndexByCount();
 
-  const durationSec = Math.random() * 2 + 5;
-  const durationMs = durationSec * 1000;
-  wheel.style.transition = `transform ${durationSec}s ease-out`;
-  wheel.style.transform = `rotate(${lastRotation}deg)`;
+        const currentRotation = lastRotation % 360;
+        const targetAngle = targetIndex * slice + slice / 2;
+        let rotationToTop = 360 - targetAngle - currentRotation;
+        rotationToTop = (rotationToTop + 360) % 360;
+        const rotationAmount = spinRounds * 360 + rotationToTop;
+        lastRotation += rotationAmount;
 
-  // PHÁT ÂM THANH KHI BẮT ĐẦU QUAY
-  if (spinSound) {
-    spinSound.currentTime = 0; // Đặt lại về đầu nếu đã phát trước đó
-    spinSound.play().catch(e => console.error("Lỗi khi phát âm thanh:", e));
-  }
+        const durationSec = Math.random() * 2 + 5;
+        const durationMs = durationSec * 1000;
+        wheel.style.transition = `transform ${durationSec}s ease-out`;
+        wheel.style.transform = `rotate(${lastRotation}deg)`;
 
+        // PHÁT ÂM THANH KHI BẮT ĐẦU QUAY
+        if (spinSound) {
+          spinSound.currentTime = 0; // Đặt lại về đầu nếu đã phát trước đó
+          spinSound
+            .play()
+            .catch((e) => console.error("Lỗi khi phát âm thanh:", e));
+        }
 
-  setTimeout(() => {
-    // DỪNG ÂM THANH KHI DỪNG QUAY
-    if (spinSound) {
-      spinSound.pause();
-      spinSound.currentTime = 0; // Tùy chọn: Đặt lại về đầu để chuẩn bị cho lần quay tiếp theo
-    }
+        setTimeout(() => {
+          // DỪNG ÂM THANH KHI DỪNG QUAY
+          if (spinSound) {
+            spinSound.pause();
+            spinSound.currentTime = 0; // Tùy chọn: Đặt lại về đầu để chuẩn bị cho lần quay tiếp theo
+          }
 
-    const prize = prizes[targetIndex];
-    const timestamp = new Date().toLocaleTimeString();
-    resultBox.textContent = `Chúc mừng bạn đã trúng: ${prize.label}`;
-    prize.count--;
-    if (prize.count === 0) prizes = prizes.filter(p => p.label !== prize.label);
-    drawWheel();
+          const prize = prizes[targetIndex];
+          const timestamp = new Date().toLocaleTimeString();
+          resultBox.textContent = `Chúc mừng bạn đã trúng: ${prize.label}`;
+          prize.count--;
+          if (prize.count === 0)
+            prizes = prizes.filter((p) => p.label !== prize.label);
+          drawWheel();
 
-    // Lịch sử chỉ hiển thị 1 vòng quay gần nhất
-    const ul = document.getElementById("history-list");
-    ul.innerHTML = ""; // Chỉ hiện 1 dòng gần nhất
-    const li = document.createElement("li");
-    li.textContent = `${timestamp} - ${prize.label}`;
-    ul.appendChild(li);
+          // Lịch sử chỉ hiển thị 1 vòng quay gần nhất
+          const ul = document.getElementById("history-list");
+          ul.innerHTML = ""; // Chỉ hiện 1 dòng gần nhất
+          const li = document.createElement("li");
+          li.textContent = `${timestamp} - ${prize.label}`;
+          ul.appendChild(li);
 
-    historyData.push({ time: timestamp, prize: prize.label });
+          historyData.push({ time: timestamp, prize: prize.label });
 
-    // TỰ ĐỘNG LƯU LỊCH SỬ CSV VÀO LOCALSTORAGE SAU MỖI LƯỢT QUAY
-    saveHistoryToLocalStorage();
+          // TỰ ĐỘNG LƯU LỊCH SỬ CSV VÀO LOCALSTORAGE SAU MỖI LƯỢT QUAY
+          saveHistoryToLocalStorage();
 
-    confetti({
-      particleCount: 150,
-      spread: 70,
-      origin: { y: 0.6 },
-    });
+          confetti({
+            particleCount: 150,
+            spread: 70,
+            origin: { y: 0.6 },
+          });
 
-    spinning = false;
-  }, durationMs);
-}
+          spinning = false;
+        }, durationMs);
+      }
 
-function renderProbabilities() {}
+      function renderProbabilities() {}
 
-function updateBackgroundFromFile() {
-  const file = document.getElementById('bg-file').files[0];
-  if (file) {
-    const r = new FileReader();
-    r.onload = (e) => {
-      document.body.style.backgroundImage = `url('${e.target.result}')`;
-    };
-    r.readAsDataURL(file);
-  }
-}
+      function updateBackgroundFromFile() {
+        const file = document.getElementById("bg-file").files[0];
+        if (file) {
+          const r = new FileReader();
+          r.onload = (e) => {
+            document.body.style.backgroundImage = `url('${e.target.result}')`;
+          };
+          r.readAsDataURL(file);
+        }
+      }
 
-function startGame() {
-  document.getElementById('setup').style.display = 'none';
-  document.getElementById('play').style.display = 'flex';
-  updateWheel();
-}
+      function startGame() {
+        document.getElementById("setup").style.display = "none";
+        document.getElementById("play").style.display = "flex";
+        updateWheel();
+      }
 
-function backToSetup() {
-  document.getElementById('play').style.display = 'none';
-  document.getElementById('setup').style.display = 'flex';
-}
+      function backToSetup() {
+        document.getElementById("play").style.display = "none";
+        document.getElementById("setup").style.display = "flex";
+      }
 
-window.addEventListener("DOMContentLoaded", () => {
-  document.getElementById('update-button')?.addEventListener('click', updateWheel);
-  document.getElementById('bg-button')?.addEventListener('click', updateBackgroundFromFile);
-  document.getElementById('ready-button')?.addEventListener('click', startGame);
-  document.getElementById('start-button')?.addEventListener('click', spinWheel);
-  document.getElementById('setup-button')?.addEventListener('click', backToSetup);
+      window.addEventListener("DOMContentLoaded", () => {
+        document
+          .getElementById("update-button")
+          ?.addEventListener("click", updateWheel);
+        document
+          .getElementById("bg-button")
+          ?.addEventListener("click", updateBackgroundFromFile);
+        document
+          .getElementById("ready-button")
+          ?.addEventListener("click", startGame);
+        document
+          .getElementById("start-button")
+          ?.addEventListener("click", spinWheel);
+        document
+          .getElementById("setup-button")
+          ?.addEventListener("click", backToSetup);
 
-  document.getElementById('download-history')?.addEventListener('click', () => {
-    downloadHistoryAsCSV();
-    // Lấy tổng số giải ban đầu
-    const input = document.getElementById("prize-input").value;
-    const allPrizes = input.split("\n").map(l => {
-      const [p, c] = l.split("|").map(x => x.trim());
-      return { label: p, total: parseInt(c) };
-    }).filter(p => p.label && !isNaN(p.total) && p.total > 0);
-    // Tổng số còn lại
-    const totalRemain = prizes.reduce((sum, p) => sum + p.count, 0);
-    let report = "Thống kê giải thưởng:\n";
-    allPrizes.forEach(p => {
-      const current = prizes.find(pr => pr.label === p.label);
-      const remain = current ? current.count : 0;
-      const used = p.total - remain;
-      const ratio = totalRemain > 0 ? ((remain / totalRemain) * 100).toFixed(1) : 0;
-      report += `${p.label} - Đã dùng: ${used} - Còn lại: ${remain} - Tỉ lệ trúng: ${ratio}%\n`;
-    });
-    // Thay đổi alert bằng console.log hoặc một modal tùy chỉnh nếu chạy trong iframe
-    console.log(report);
-  });
-  // Sự kiện nút Xóa lịch sử
-  document.getElementById('clear-history')?.addEventListener('click', () => {
-    // Thay đổi confirm bằng modal tùy chỉnh
-    if (window.confirm('Bạn có chắc chắn muốn xóa toàn bộ Lịch sử?')) { // Sử dụng window.confirm để tương thích với môi trường bên ngoài iframe
-      localStorage.removeItem('lich_su_trung_thuong_csv');
-      historyData = [];
-      document.getElementById("history-list").innerHTML = "";
-      document.getElementById("result").textContent = "";
-      // Thay đổi alert bằng console.log hoặc một modal tùy chỉnh
-      console.log('Đã xóa toàn bộ lịch sử quay!');
-    }
-  });
+        document
+          .getElementById("download-history")
+          ?.addEventListener("click", () => {
+            downloadHistoryAsCSV();
+            // Lấy tổng số giải ban đầu
+            const input = document.getElementById("prize-input").value;
+            const allPrizes = input
+              .split("\n")
+              .map((l) => {
+                const parts = l.split("|").map((x) => x.trim());
+                return { label: parts[0], total: parseInt(parts[1]) };
+              })
+              .filter((p) => p.label && !isNaN(p.total) && p.total > 0);
+            // Tổng số còn lại
+            const totalRemain = prizes.reduce((sum, p) => sum + p.count, 0);
+            let report = "Thống kê giải thưởng:\n";
+            allPrizes.forEach((p) => {
+              const current = prizes.find((pr) => pr.label === p.label);
+              const remain = current ? current.count : 0;
+              const used = p.total - remain;
+              const ratio =
+                totalRemain > 0 ? ((remain / totalRemain) * 100).toFixed(1) : 0;
+              report += `${p.label} - Đã dùng: ${used} - Còn lại: ${remain} - Tỉ lệ trúng: ${ratio}%\n`;
+            });
+            // Hiển thị báo cáo bằng alert()
+            alert(report);
+          });
+        // Sự kiện nút Xóa lịch sử
+        document
+          .getElementById("clear-history")
+          ?.addEventListener("click", () => {
+            if (confirm("Bạn có chắc chắn muốn xóa toàn bộ Lịch sử?")) {
+              localStorage.removeItem("lich_su_trung_thuong_csv");
+              historyData = [];
+              document.getElementById("history-list").innerHTML = "";
+              document.getElementById("result").textContent = "";
+              // Hiển thị thông báo bằng alert()
+              alert("Đã xóa toàn bộ lịch sử quay!");
+            }
+          });
 
-  // KHỞI TẠO ĐỐI TƯỢNG ÂM THANH KHI DOM ĐƯỢC TẢI
-  spinSound = document.getElementById("spin-sound");
+        // KHỞI TẠO ĐỐI TƯỢNG ÂM THANH KHI DOM ĐƯỢC TẢI
+        spinSound = document.getElementById("spin-sound");
 
+        updateWheel();
+        restoreHistoryFromLocalStorage(); // Phục hồi lịch sử khi tải lại trang!
+      });
 
-  updateWheel();
-  restoreHistoryFromLocalStorage(); // Phục hồi lịch sử khi tải lại trang!
-});
+      // TÍNH NĂNG PHÍM TẮT SPACE (quay vòng) & F1 (ẩn/hiện nút)
+      let showControlButtons = true;
+      document.addEventListener("keydown", function (e) {
+        // Chặn mặc định của F1
+        if (e.key === "F1") {
+          e.preventDefault();
+          showControlButtons = !showControlButtons;
+          document
+            .querySelectorAll(".control-buttons-row .button")
+            .forEach((btn) => {
+              btn.style.display = showControlButtons ? "" : "none";
+            });
+        }
+        // SPACE để quay (chỉ khi ở màn hình play và không focus input)
+        if (
+          (e.code === "Space" || e.key === " ") &&
+          document.getElementById("play").style.display === "flex"
+        ) {
+          const active = document.activeElement;
+          if (
+            active.tagName !== "TEXTAREA" &&
+            active.tagName !== "INPUT" &&
+            active.tagName !== "BUTTON"
+          ) {
+            spinWheel();
+          }
+        }
+      });
 
-// TÍNH NĂNG PHÍM TẮT SPACE (quay vòng) & F1 (ẩn/hiện nút)
-let showControlButtons = true;
-document.addEventListener("keydown", function (e) {
-  // Chặn mặc định của F1
-  if (e.key === "F1") {
-    e.preventDefault();
-    showControlButtons = !showControlButtons;
-    document.querySelectorAll('.control-buttons-row .button').forEach(btn => {
-      btn.style.display = showControlButtons ? "" : "none";
-    });
-  }
-  // SPACE để quay (chỉ khi ở màn hình play và không focus input)
-  if (
-    (e.code === "Space" || e.key === " ") &&
-    document.getElementById("play").style.display === "flex"
-  ) {
-    const active = document.activeElement;
-    if (
-      active.tagName !== "TEXTAREA" &&
-      active.tagName !== "INPUT" &&
-      active.tagName !== "BUTTON"
-    ) {
-      spinWheel();
-    }
-  }
-});
-
-window.addEventListener("beforeunload", function (e) {
-  e.preventDefault();
-  e.returnValue = "";
-});
-</script>
-</body>
+      window.addEventListener("beforeunload", function (e) {
+        e.preventDefault();
+        e.returnValue = "";
+      });
+    </script>
+  </body>
 </html>
